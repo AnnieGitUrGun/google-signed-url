@@ -1,0 +1,19 @@
+{
+  "name": "google-signed-url",
+  "version": "0.0.0",
+  "private": true,
+  "description": "A Utility to Sign Static Map URLs",
+  "main": "urlsign.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Century Engineering Inc.",
+  "devDependencies": {
+    "dotenv": "^2.0.0",
+    "expect.js": "^0.3.1",
+    "umzug": "^1.11.0"
+  },
+  "dependencies": {
+    "google-closure-library": "^20170910.0.0"
+  }
+}
