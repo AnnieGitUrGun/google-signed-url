@@ -1,6 +1,6 @@
 {
   "name": "google-signed-url",
-  "version": "0.0.0",
+  "version": "0.0.0-beta.0",
   "private": true,
   "description": "A Utility to Sign Static Map URLs",
   "main": "urlsign.js",
