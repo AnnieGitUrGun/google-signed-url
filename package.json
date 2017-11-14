@@ -3,11 +3,28 @@
   "version": "0.0.0-beta.0",
   "private": true,
   "description": "A Utility to Sign Static Map URLs",
+  "homepage": "https://github.com/anniegiturgun/google-signed-url",
   "main": "urlsign.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Century Engineering Inc.",
+  "author": {
+    "name": "Anne Canoune",
+    "email": "acanoune@centuryeng.com",
+  },
+  "keywords": [
+    "google",
+    "static",
+    "maps",
+    "client ID",
+    "signature"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/anniegiturgun/google-signed-url.git",
+  },
+  "bugs": "http://github.com/anniegiturgun/google-signed-url/issues",
+  "license": "MIT",
   "devDependencies": {
     "dotenv": "^2.0.0",
     "expect.js": "^0.3.1",
