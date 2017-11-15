@@ -4,6 +4,8 @@ A utility to sign static map URLs.
 
 Inspired by [url-signer](https://github.com/kamilwaheed/url-signer).
 
+**Help is Always Appreciated!** If you would like to help make this code better [get in touch](acanoune@centuryeng.com).
+
 ## Usage ##
 
 You must first initialize the singleton:
@@ -11,14 +13,14 @@ You must first initialize the singleton:
 var urlSign = require('google-signed-url');
 
 urlSign.init({
-    latitude: sitereport.latitude,
-    longitude: sitereport.longitude,
-    zoom: 19,
-    size: '600x600',
-    maptype: 'hybrid',
-    markerColor: markerColor,
-    client: process.env.GOOGLE_STATIC_MAPS_CLIENT_ID,
-    privateKey: process.env.GOOGLE_MAPS_PRIVATE_KEY
+    latitude: <LATITUDE>,
+    longitude: <LONGITUDE>,
+    zoom: <ZOOM LEVEL>,
+    size: <e.g.'600x600'>,
+    maptype: <'roadmap', 'satellite', 'hybrid', 'terrain'>
+    markerColor: <e.g. '0x9F2538'>,
+    client: <CLIENT ID>,
+    privateKey: <PRIVATE KEY>
   });
 ```
 Then you can sign the URL:
@@ -26,6 +28,13 @@ Then you can sign the URL:
 var signedUrl = urlSign.getSignedUrl();
 ```
 You don't need to pass in any additional parameters.
+
+**NOTES**:
+1. This module assumes you want to place a single marker on the static map and that the coordinates match the lat/long in the singleton. This should be modified in the future to allow for more flexibility.
+
+2. Use something like [dotenv](https://www.npmjs.com/package/dotenv) to store your Client ID and Private Key as environment variables instead of having them in your code.
+
+
 
 ## License ##
 MIT License
