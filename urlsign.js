@@ -132,11 +132,11 @@ goog.require('goog.crypt.base64');
   * @return {String}           Signed Google Static Maps URL
   */
   getSignedUrl: function() {
-    var baseUrl = getBaseUrl(this._latitude, this._longitude, this._zoom, this._size, this._maptype, this._client);
-    var urlToSign = getUrlToSign(baseUrl);
-    var decodedKey = getDecodedKey(this._privateKey);
-    var encodedSignature = getUrlSignature(decodedKey, urlToSign);
-    var encodedSignature = checkSignature(encodedSignature);
+    var baseUrl = this.getBaseUrl(this._latitude, this._longitude, this._zoom, this._size, this._maptype, this._client);
+    var urlToSign = this.getUrlToSign(baseUrl);
+    var decodedKey = this.getDecodedKey(this._privateKey);
+    var encodedSignature = this.getUrlSignature(decodedKey, urlToSign);
+    var encodedSignature = this.checkSignature(encodedSignature);
     return baseUrl + "&signature=" + encodedSignature;
   }
 };
