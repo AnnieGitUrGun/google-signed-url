@@ -47,7 +47,7 @@ goog.require('goog.crypt.base64');
    },
 
    getBaseUrl: function() {
-     if (!this._latitude.length || !this._longitude.length || !this._zoom || !this._size || !this._maptype || !this._markerColor || !this._client) {
+     if (!this._latitude.length || !this._longitude.length || !this._zoom.length || !this._size.length || !this._maptype.length || !this._markerColor.length || !this._client.length) {
        throw new Error("One or more parameters are missing!");
      }
      return "https://maps.googleapis.com/maps/api/staticmap?center="
