@@ -46,11 +46,11 @@ goog.require('goog.crypt.base64');
      this._privateKey = options.privateKey || this._privateKey;
    },
 
-   getBaseUrl: function(urlBase, latitude, longitude, zoom, size, maptype, markerColor, client) {
+   getBaseUrl: function(latitude, longitude, zoom, size, maptype, markerColor, client) {
      if (!this._latitude || !this._longitude || !this._zoom || !this._size || !this._maptype || !this._markerColor || !this._client) {
        throw new Error("One or more parameters are missing!");
      }
-     return urlBase
+     return 'https://maps.googleapis.com/maps/api/staticmap?center='
                 + this._latitude
                 + ","
                 + this._longitude
@@ -133,7 +133,7 @@ goog.require('goog.crypt.base64');
   * @return {String}           Signed Google Static Maps URL
   */
   getSignedUrl: function(urlBase) {
-    var baseUrl = this.getBaseUrl(urlBase, this._latitude, this._longitude, this._zoom, this._size, this._maptype, this._markerColor, this._client);
+    var baseUrl = this.getBaseUrl(this._latitude, this._longitude, this._zoom, this._size, this._maptype, this._markerColor, this._client);
     var urlToSign = this.getUrlToSign(baseUrl);
     var decodedKey = this.getDecodedKey(this._privateKey);
     var encodedSignature = this.getUrlSignature(decodedKey, urlToSign);
