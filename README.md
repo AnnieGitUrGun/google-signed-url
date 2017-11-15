@@ -4,7 +4,7 @@ A utility to sign static map URLs.
 
 Inspired by [url-signer](https://github.com/kamilwaheed/url-signer).
 
-**Help is Always Appreciated!** If you would like to help make this code better [get in touch](acanoune@centuryeng.com).
+**Help is Always Appreciated!** If you would like to help make this code better get in touch by opening an issue.
 
 ## Usage ##
 
