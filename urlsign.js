@@ -2,7 +2,7 @@
  * Returns a singleton
  *
  * @module urlsign
-*/
+ */
 
 var url = require('url');
 require("google-closure-library");
@@ -10,17 +10,17 @@ goog.require('goog.crypt.Hmac');
 goog.require('goog.crypt.Sha1');
 goog.require('goog.crypt.base64');
 
- module.exports = exports = {
-   _latitude: "",
-   _longitude: "",
-   _zoom: "",
-   _size: "",
-   _maptype: "",
-   _markerColor: "",
-   _client: "",
-   _privateKey: "",
+module.exports = exports = {
+  _latitude: "",
+  _longitude: "",
+  _zoom: "",
+  _size: "",
+  _maptype: "",
+  _markerColor: "",
+  _key: "",
+  _signingSecret: "",
 
-   /**
+  /**
    * Initialize the urlsign singleton with a privateKey and other options
    *
    *
@@ -31,76 +31,76 @@ goog.require('goog.crypt.base64');
    * @param {String} options.size         The map size to use for generating the url
    * @param {String} options.maptype      The map type to use for generating the url
    * @param {String} options.markerColor  The marker color to use for generating the url
-   * @param {String} options.client       The client ID to use for generating the url
-   * @param {String} options.privateKey   The private key to hash the URLs with
+   * @param {String} options.key       The API Key to use for generating the url
+   * @param {String} options.signingSecret   The secret key to hash the URLs with
    */
 
-   init: function(options) {
-     this._latitude = options.latitude || this._latitude;
-     this._longitude = options.longitude || this._longitude;
-     this._zoom = options.zoom || this._zoom;
-     this._size = options.size || this._size;
-     this._maptype = options.maptype || this._maptype;
-     this._markerColor = options.markerColor || this._markerColor;
-     this._client = options.client || this._client;
-     this._privateKey = options.privateKey || this._privateKey;
-   },
+  init: function (options) {
+    this._latitude = options.latitude || this._latitude;
+    this._longitude = options.longitude || this._longitude;
+    this._zoom = options.zoom || this._zoom;
+    this._size = options.size || this._size;
+    this._maptype = options.maptype || this._maptype;
+    this._markerColor = options.markerColor || this._markerColor;
+    this._key = options.key || this._key;
+    this._signingSecret = options.signingSecret || this._signingSecret;
+  },
 
-   /**
+  /**
    *
    * TODO: Modify this function so that markers and marker styling are not required.
    *
    **/
-   getBaseUrl: function(latitude, longitude, zoom, size, maptype, markerColor, client) {
-     if (!this._latitude || !this._longitude || !this._zoom || !this._size || !this._maptype || !this._markerColor || !this._client) {
-       throw new Error("One or more parameters are missing!");
-     }
-     return 'https://maps.googleapis.com/maps/api/staticmap?center='
-                + this._latitude
-                + ","
-                + this._longitude
-                + "&zoom="
-                + this._zoom
-                + "&size="
-                + this._size
-                + "&maptype="
-                + this._maptype
-                + "&markers=color:"
-                + this._markerColor
-                + "%7C"
-                + this._latitude
-                + ","
-                + this._longitude
-                + "&client="
-                + this._client;
-   },
+  getBaseUrl: function (latitude, longitude, zoom, size, maptype, markerColor, client) {
+    if (!this._latitude || !this._longitude || !this._zoom || !this._size || !this._maptype || !this._markerColor || !this._key) {
+      throw new Error("One or more parameters are missing!");
+    }
+    return 'https://maps.googleapis.com/maps/api/staticmap?center=' +
+      this._latitude +
+      "," +
+      this._longitude +
+      "&zoom=" +
+      this._zoom +
+      "&size=" +
+      this._size +
+      "&maptype=" +
+      this._maptype +
+      "&markers=color:" +
+      this._markerColor +
+      "%7C" +
+      this._latitude +
+      "," +
+      this._longitude +
+      "&key=" +
+      this._key;
+  },
 
-   getUrlToSign: function(baseUrl) {
-     var parsedUrl = url.parse(baseUrl, true);
-     return parsedUrl.path;
-   },
+  getUrlToSign: function (baseUrl) {
+    var parsedUrl = url.parse(baseUrl, true);
+    return parsedUrl.path;
+  },
 
-   getDecodedKey: function(privateKey) {
-     if (!this._privateKey.length) {
-       throw new Error("Call init() with privateKey first");
-     }
-     try {
-        return goog.crypt.stringToByteArray(
-            goog.crypt.base64.decodeString(privateKey, true));
-      } catch (e) {
-        return 'Invalid character in Private Key';
-      }
-   },
-   /**
+  getDecodedKey: function (signingSecret) {
+    if (!this._signingSecret.length) {
+      throw new Error("Call init() with privateKey first");
+    }
+    try {
+      return goog.crypt.stringToByteArray(
+        goog.crypt.base64.decodeString(signingSecret, true));
+    } catch (e) {
+      return 'Invalid character in Private Key';
+    }
+  },
+  /**
    * Sign a given URL and return the signature
    *
    * @param  {String} urlToSign URL to sign
-   * @throws {Error}            If init() is not called first with a privateKey
+   * @throws {Error}            If init() is not called first with a signingSecret
    * @return {String}           URL signature
    */
-  getUrlSignature: function(decodedKey, urlToSign) {
-    if (!this._privateKey.length) {
-      throw new Error("Call init() with privateKey first");
+  getUrlSignature: function (decodedKey, urlToSign) {
+    if (!this._signingSecret.length) {
+      throw new Error("Call init() with signingSecret first");
     }
     // Create a signature using the private key and the URL-encoded
     // String using HMAC SHA1. This signature will be binary.
@@ -108,20 +108,20 @@ goog.require('goog.crypt.base64');
     var signature = hmac.getHmac(urlToSign);
     // Encode the binary signature into base64 for use within a URL.
     return encodedSignature = goog.crypt.base64.encodeString(
-        goog.crypt.byteArrayToString(signature), false);
+      goog.crypt.byteArrayToString(signature), false);
   },
   /**
-  * Check that the signature does not contain a plus sign or a forward slash. If it does,
-  * replace it with a minus sign or underscore.
-  *
-  * NOTE: In the future we may need to expand this to other special characters
-  * or we may discover that we don't need it after all and that Anne just made
-  * a stupid mistake. Hey, it happens!
-  *
-  * @param  {String} encodedSignature The encoded signature generated by getUrlSignature()
-  * @throws {Error}                   If there's a problem with the regular expression
-  * @return {String}                  Modified signature (only if it contains a plus sign or forward slash)
-  */
+   * Check that the signature does not contain a plus sign or a forward slash. If it does,
+   * replace it with a minus sign or underscore.
+   *
+   * NOTE: In the future we may need to expand this to other special characters
+   * or we may discover that we don't need it after all and that Anne just made
+   * a stupid mistake. Hey, it happens!
+   *
+   * @param  {String} encodedSignature The encoded signature generated by getUrlSignature()
+   * @throws {Error}                   If there's a problem with the regular expression
+   * @return {String}                  Modified signature (only if it contains a plus sign or forward slash)
+   */
   checkSignature: function (encodedSignature) {
     try {
       encodedSignature = encodedSignature.replace(/\+/g, "-");
@@ -132,15 +132,15 @@ goog.require('goog.crypt.base64');
     }
   },
   /**
-  * Generate a url to sign; decode private key, encode signature, check signature,
-  * and generate signed url.
-  *
-  * @return {String}           Signed Google Static Maps URL
-  */
-  getSignedUrl: function(urlBase) {
-    var baseUrl = this.getBaseUrl(this._latitude, this._longitude, this._zoom, this._size, this._maptype, this._markerColor, this._client);
+   * Generate a url to sign; decode private key, encode signature, check signature,
+   * and generate signed url.
+   *
+   * @return {String}           Signed Google Static Maps URL
+   */
+  getSignedUrl: function (urlBase) {
+    var baseUrl = this.getBaseUrl(this._latitude, this._longitude, this._zoom, this._size, this._maptype, this._markerColor, this._key);
     var urlToSign = this.getUrlToSign(baseUrl);
-    var decodedKey = this.getDecodedKey(this._privateKey);
+    var decodedKey = this.getDecodedKey(this._signingSecret);
     var encodedSignature = this.getUrlSignature(decodedKey, urlToSign);
     var encodedSignature = this.checkSignature(encodedSignature);
     return baseUrl + "&signature=" + encodedSignature;
